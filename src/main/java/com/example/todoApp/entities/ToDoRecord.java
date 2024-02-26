@@ -5,18 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 
 
 @Entity
-public class ToDoRecord extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ToDoRecord extends BaseEntityAudit {
 
     @Column(nullable = false)
     @NotBlank(message = "Name is required")
     private String name;
 
-    protected ToDoRecord() {
-    }
+    protected ToDoRecord() {}
 
     public ToDoRecord(String name) {
         this.name = name;
@@ -25,9 +20,7 @@ public class ToDoRecord extends BaseEntity {
 
     @Override
     public String toString() {
-        return String.format(
-                "Todo[id=%d, name='%s']",
-                id, name);
+        return String.format("Todo[id=%d, name='%s']", id, name);
     }
 
     public Long getId() {
