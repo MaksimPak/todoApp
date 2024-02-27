@@ -2,10 +2,10 @@ package com.example.todoApp.entities;
 
 import com.example.todoApp.entities.enums.Role;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import jakarta.persistence.EnumType;
 
 import java.util.Collection;
 
@@ -18,6 +18,7 @@ public class UserAccount extends BaseEntityAudit implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    protected UserAccount() {}
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
