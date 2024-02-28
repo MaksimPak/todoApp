@@ -1,15 +1,19 @@
 package com.example.todoApp.dto;
 
 import com.example.todoApp.entities.enums.Role;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class RegisterRequest {
     private String firstName;
     private String lastName;
     @NotBlank(message = "email is required")
+    @Email
     private String email;
+    @NotBlank(message = "password is required")
     private String password;
-    @NotBlank(message = "role is required")
+    @NotNull
     private Role role;
     public RegisterRequest(String firstname, String lastName, String email, String password, Role role) {
         this.firstName = firstname;

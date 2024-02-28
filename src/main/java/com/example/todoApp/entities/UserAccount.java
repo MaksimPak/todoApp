@@ -1,6 +1,7 @@
 package com.example.todoApp.entities;
 
 import com.example.todoApp.entities.enums.Role;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,8 +15,11 @@ import java.util.Collection;
 public class UserAccount extends BaseEntityAudit implements UserDetails {
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
