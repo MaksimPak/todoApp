@@ -3,7 +3,7 @@ package com.example.todoApp.controller;
 import com.example.todoApp.dto.AuthenticationRequest;
 import com.example.todoApp.dto.AuthenticationResponse;
 import com.example.todoApp.dto.RegisterRequest;
-import com.example.todoApp.exception.ValidationError;
+import com.example.todoApp.exception.EmailAlreadyTaken;
 import com.example.todoApp.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class AuthController {
     @PostMapping("/register")
     public AuthenticationResponse register(
             @Valid @RequestBody RegisterRequest request
-            ) throws ValidationError {
+            ) throws EmailAlreadyTaken {
         return authenticationService.register(request);
     }
     @PostMapping("/authenticate")

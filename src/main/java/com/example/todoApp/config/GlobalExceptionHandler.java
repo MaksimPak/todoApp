@@ -1,6 +1,6 @@
 package com.example.todoApp.config;
 
-import com.example.todoApp.exception.ValidationError;
+import com.example.todoApp.exception.EmailAlreadyTaken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
-            ValidationError.class,
+            EmailAlreadyTaken.class,
             MethodArgumentNotValidException.class,
     })
     public final ResponseEntity<APIError> handleException(
@@ -28,9 +28,9 @@ public class GlobalExceptionHandler {
     ) {
         HttpHeaders headers = new HttpHeaders();
 
-        if (ex instanceof ValidationError validationError) {
+        if (ex instanceof EmailAlreadyTaken emailAlreadyTaken) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
-            return handleValidationError(validationError, headers, status, request);
+            return handleEmailAlreadyTaken(emailAlreadyTaken, headers, status, request);
         }
         else if (ex instanceof MethodArgumentNotValidException subEx) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -54,20 +54,15 @@ public class GlobalExceptionHandler {
                 .map(validationError -> validationError.getField() + " " + validationError.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        return handleExceptionInternal(ex, new APIError(errors), headers, status, request);
+        return handleExceptionInternal(ex, new APIError("validation error", errors), headers, status, request);
     }
-    protected ResponseEntity<APIError> handleValidationError(
-            ValidationError ex,
+    protected ResponseEntity<APIError> handleEmailAlreadyTaken(
+            EmailAlreadyTaken ex,
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request
     ) {
-        List<String> errorMessages = ex.getErrors()
-                .stream()
-                .map(validationError -> validationError.getObjectName() + " " + validationError.getDefaultMessage())
-                .collect(Collectors.toList());
-
-        return handleExceptionInternal(ex, new APIError(errorMessages), headers, status, request);
+        return handleExceptionInternal(ex, new APIError(ex.getMessage()), headers, status, request);
     }
 
     protected ResponseEntity<APIError> handleExceptionInternal(

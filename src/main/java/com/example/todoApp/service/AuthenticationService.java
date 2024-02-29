@@ -6,7 +6,7 @@ import com.example.todoApp.dto.RegisterRequest;
 import com.example.todoApp.entities.Token;
 import com.example.todoApp.entities.UserAccount;
 import com.example.todoApp.entities.enums.TokenType;
-import com.example.todoApp.exception.ValidationError;
+import com.example.todoApp.exception.EmailAlreadyTaken;
 import com.example.todoApp.repository.TokenRepository;
 import com.example.todoApp.repository.UserAccountRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.ObjectError;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,12 +36,10 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public  AuthenticationResponse register(RegisterRequest request) throws ValidationError {
+    public  AuthenticationResponse register(RegisterRequest request) throws EmailAlreadyTaken {
         userAccountRepository.findByEmail(request.getEmail()).ifPresent(
                 userAccount -> {
-                    throw new ValidationError(List.of(
-                        new ObjectError(userAccount.getEmail(), "is already taken"))
-                    );
+                    throw new EmailAlreadyTaken(request.getEmail());
                 }
         );
 
