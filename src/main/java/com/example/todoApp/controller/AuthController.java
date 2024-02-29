@@ -3,12 +3,13 @@ package com.example.todoApp.controller;
 import com.example.todoApp.dto.AuthenticationRequest;
 import com.example.todoApp.dto.AuthenticationResponse;
 import com.example.todoApp.dto.RegisterRequest;
+import com.example.todoApp.exception.ValidationError;
 import com.example.todoApp.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,26 +24,22 @@ public class AuthController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(
+    public AuthenticationResponse register(
             @Valid @RequestBody RegisterRequest request
-            ) {
-        AuthenticationResponse authResponse = authenticationService.register(request);
-        if (authResponse.getAccessToken() != null && authResponse.getRefreshToken() != null) {
-            return ResponseEntity.ok(authResponse);
-        }
-        return ResponseEntity.badRequest().build();
+            ) throws ValidationError {
+        return authenticationService.register(request);
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    public AuthenticationResponse authenticate(
             @Valid @RequestBody AuthenticationRequest request
-            ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+            ) throws UsernameNotFoundException {
+        return authenticationService.authenticate(request);
     }
     @PostMapping("/refresh-token")
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, UsernameNotFoundException {
         authenticationService.refreshToken(request, response);
     }
 }

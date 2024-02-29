@@ -1,7 +1,5 @@
 package com.example.todoApp.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class AuthenticationResponse {
     private final String accessToken;
     private final String refreshToken;

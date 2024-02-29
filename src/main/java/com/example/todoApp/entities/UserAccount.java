@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -46,6 +45,8 @@ public class UserAccount extends BaseEntityAudit implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    public String getEmail() { return email; }
 
     @Override
     public boolean isAccountNonExpired() {

@@ -6,19 +6,20 @@ import com.example.todoApp.dto.RegisterRequest;
 import com.example.todoApp.entities.Token;
 import com.example.todoApp.entities.UserAccount;
 import com.example.todoApp.entities.enums.TokenType;
+import com.example.todoApp.exception.ValidationError;
 import com.example.todoApp.repository.TokenRepository;
 import com.example.todoApp.repository.UserAccountRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.ObjectError;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,13 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public  AuthenticationResponse register(RegisterRequest request) {
+    public  AuthenticationResponse register(RegisterRequest request) throws ValidationError {
+        userAccountRepository.findByEmail(request.getEmail()).ifPresent(
+                userAccount -> {throw new ValidationError(List.of(
+                        new ObjectError(userAccount.getEmail(), "is already taken")
+                ));}
+        );
+
         UserAccount user = new UserAccount(
                 request.getFirstname(),
                 request.getLastname(),
@@ -44,20 +51,14 @@ public class AuthenticationService {
                 passwordEncoder.encode(request.getPassword()),
                 request.getRole()
         );
-        UserAccount savedUser;
-        try {
-            savedUser = userAccountRepository.save(user);
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
-            saveUserToken(savedUser, jwtToken);
-            return new AuthenticationResponse(
-                    jwtToken,
-                    refreshToken
-            );
-        } catch (DataIntegrityViolationException e) {
-            return new AuthenticationResponse(null, null);
-        }
-
+        UserAccount savedUser = userAccountRepository.save(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        saveUserToken(savedUser, jwtToken);
+        return new AuthenticationResponse(
+                jwtToken,
+                refreshToken
+        );
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
