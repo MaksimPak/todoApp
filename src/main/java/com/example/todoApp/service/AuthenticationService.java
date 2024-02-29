@@ -39,9 +39,11 @@ public class AuthenticationService {
 
     public  AuthenticationResponse register(RegisterRequest request) throws ValidationError {
         userAccountRepository.findByEmail(request.getEmail()).ifPresent(
-                userAccount -> {throw new ValidationError(List.of(
-                        new ObjectError(userAccount.getEmail(), "is already taken")
-                ));}
+                userAccount -> {
+                    throw new ValidationError(List.of(
+                        new ObjectError(userAccount.getEmail(), "is already taken"))
+                    );
+                }
         );
 
         UserAccount user = new UserAccount(

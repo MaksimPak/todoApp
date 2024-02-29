@@ -22,7 +22,7 @@ public class ToDoController {
 
 
     @PostMapping("/todos")
-    ToDoRecord newEmployee(@Valid @RequestBody ToDoRecord newTodo) {
+    ToDoRecord newTodo(@Valid @RequestBody ToDoRecord newTodo) {
         return repository.save(newTodo);
     }
 
