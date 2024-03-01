@@ -1,6 +1,5 @@
 package com.example.todoApp.config;
 
-import com.example.todoApp.exception.EmailAlreadyTaken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
-            EmailAlreadyTaken.class,
             MethodArgumentNotValidException.class,
     })
     public final ResponseEntity<APIError> handleException(
@@ -27,12 +25,7 @@ public class GlobalExceptionHandler {
             WebRequest request
     ) {
         HttpHeaders headers = new HttpHeaders();
-
-        if (ex instanceof EmailAlreadyTaken emailAlreadyTaken) {
-            HttpStatus status = HttpStatus.BAD_REQUEST;
-            return handleEmailAlreadyTaken(emailAlreadyTaken, headers, status, request);
-        }
-        else if (ex instanceof MethodArgumentNotValidException subEx) {
+        if (ex instanceof MethodArgumentNotValidException subEx) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             return handleMethodArgumentNotValid(subEx, subEx.getHeaders(), status, request);
         }
@@ -56,15 +49,6 @@ public class GlobalExceptionHandler {
 
         return handleExceptionInternal(ex, new APIError("validation error", errors), headers, status, request);
     }
-    protected ResponseEntity<APIError> handleEmailAlreadyTaken(
-            EmailAlreadyTaken ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
-    ) {
-        return handleExceptionInternal(ex, new APIError(ex.getMessage()), headers, status, request);
-    }
-
     protected ResponseEntity<APIError> handleExceptionInternal(
             Exception ex, APIError body,
             HttpHeaders headers, HttpStatusCode status,

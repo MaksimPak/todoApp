@@ -1,5 +1,6 @@
 package com.example.todoApp.dto;
 
+import com.example.todoApp.annotations.UniqueEmailConstraint;
 import com.example.todoApp.entities.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ public class RegisterRequest {
     private String lastName;
     @NotBlank(message = "email is required")
     @Email
+    @UniqueEmailConstraint
     private String email;
     @NotBlank(message = "password is required")
     private String password;

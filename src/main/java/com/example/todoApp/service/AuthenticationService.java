@@ -6,7 +6,6 @@ import com.example.todoApp.dto.RegisterRequest;
 import com.example.todoApp.entities.Token;
 import com.example.todoApp.entities.UserAccount;
 import com.example.todoApp.entities.enums.TokenType;
-import com.example.todoApp.exception.EmailAlreadyTaken;
 import com.example.todoApp.repository.TokenRepository;
 import com.example.todoApp.repository.UserAccountRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,12 +35,12 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public  AuthenticationResponse register(RegisterRequest request) throws EmailAlreadyTaken {
-        userAccountRepository.findByEmail(request.getEmail()).ifPresent(
-                userAccount -> {
-                    throw new EmailAlreadyTaken(request.getEmail());
-                }
-        );
+    public  AuthenticationResponse register(RegisterRequest request) {
+//        userAccountRepository.findByEmail(request.getEmail()).ifPresent(
+//                userAccount -> {
+//                    throw new EmailAlreadyTaken(request.getEmail());
+//                }
+//        );
 
         UserAccount user = new UserAccount(
                 request.getFirstname(),
