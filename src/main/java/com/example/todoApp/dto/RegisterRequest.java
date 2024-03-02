@@ -9,11 +9,11 @@ import jakarta.validation.constraints.NotNull;
 public class RegisterRequest {
     private String firstName;
     private String lastName;
-    @NotBlank(message = "email is required")
+    @NotBlank
     @Email
     @UniqueEmailConstraint
     private String email;
-    @NotBlank(message = "password is required")
+    @NotBlank
     private String password;
     @NotNull
     private Role role;

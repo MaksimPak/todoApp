@@ -36,12 +36,6 @@ public class AuthenticationService {
     private AuthenticationManager authenticationManager;
 
     public  AuthenticationResponse register(RegisterRequest request) {
-//        userAccountRepository.findByEmail(request.getEmail()).ifPresent(
-//                userAccount -> {
-//                    throw new EmailAlreadyTaken(request.getEmail());
-//                }
-//        );
-
         UserAccount user = new UserAccount(
                 request.getFirstname(),
                 request.getLastname(),
