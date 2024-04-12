@@ -24,10 +24,6 @@ public class ToDoRecord extends BaseEntityAudit {
         return String.format("Todo[id=%d, name='%s']", id, name);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
