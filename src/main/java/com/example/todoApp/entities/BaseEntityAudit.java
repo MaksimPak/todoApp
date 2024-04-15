@@ -8,18 +8,21 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
 import java.util.Date;
+import java.util.UUID;
 
 @MappedSuperclass
 public class BaseEntityAudit extends BaseEntity {
     @CreationTimestamp
     private Date createdAt;
+
     @UpdateTimestamp
     private Date updatedAt;
+
     @CreatedBy
     @Column(updatable = false)
-    private Long createdBy;
+    private UUID createdBy;
 
     @LastModifiedBy
     @Column(insertable = false)
-    private Long lastModifiedBy;
+    private UUID lastModifiedBy;
 }
