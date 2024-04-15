@@ -1,0 +1,27 @@
+
+ALTER TABLE to_do_record
+    DROP COLUMN id;
+
+ALTER TABLE to_do_record
+    ADD id UUID NOT NULL PRIMARY KEY;
+
+ALTER TABLE token
+    DROP COLUMN id;
+
+ALTER TABLE token
+    DROP COLUMN user_id;
+
+ALTER TABLE token
+    ADD id UUID NOT NULL PRIMARY KEY;
+
+ALTER TABLE user_account
+    DROP COLUMN id;
+
+ALTER TABLE user_account
+    ADD id UUID NOT NULL PRIMARY KEY;
+
+ALTER TABLE token
+    ADD user_id UUID;
+
+ALTER TABLE token
+    ADD CONSTRAINT FK_TOKEN_ON_USER FOREIGN KEY (user_id) REFERENCES user_account (id);

@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.UUID;
+
 @Configuration
 public class AppConfig {
     @Autowired
@@ -27,7 +29,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuditorAware<Long> auditorAware(){
+    public AuditorAware<UUID> auditorAware(){
         return new ApplicationAuditAware();
     }
 
