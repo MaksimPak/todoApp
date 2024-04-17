@@ -1,9 +1,11 @@
 package com.example.todoApp.exception;
 
 
+import java.util.UUID;
+
 public class ToDoNotFoundException extends RuntimeException {
 
-    public ToDoNotFoundException(Long id) {
+    public ToDoNotFoundException(UUID id) {
         super("Could not find todo " + id);
     }
 }
