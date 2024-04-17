@@ -1,4 +1,13 @@
 spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      endpoint: ${AWS_ENDPOINT:#{null}}
+      s3:
+        path-style-access-enabled: ${S3_PATH_STYLE:#{null}}
+
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
@@ -6,7 +15,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: false
     properties:
       hibernate:
         format_sql: true
