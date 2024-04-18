@@ -35,7 +35,7 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public  AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request) {
         UserAccount user = new UserAccount(
                 request.getFirstname(),
                 request.getLastname(),
@@ -52,6 +52,7 @@ public class AuthenticationService {
                 refreshToken
         );
     }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -93,12 +94,13 @@ public class AuthenticationService {
         );
         tokenRepository.save(token);
     }
+
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         final String refreshToken = authHeader.substring(7);
@@ -110,7 +112,7 @@ public class AuthenticationService {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                var authResponse = new AuthenticationResponse(accessToken,refreshToken);
+                var authResponse = new AuthenticationResponse(accessToken, refreshToken);
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }

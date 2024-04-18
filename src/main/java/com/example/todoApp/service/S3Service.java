@@ -32,9 +32,17 @@ public class S3Service {
                 ObjectMetadata.builder().contentType(file.getContentType()).build()
         );
 
-        return s3Client.utilities().getUrl(
-                builder -> builder.bucket(bucketName).key(s3Resource.getLocation().getObject())
-        ).toExternalForm();
+        return s3Resource.getLocation().getObject();
+    }
+
+    public String constructFullPath(String bucketPath) {
+        if (bucketPath != null) {
+
+            return s3Client.utilities().getUrl(
+                    builder -> builder.bucket(bucketName).key(bucketPath)
+            ).toExternalForm();
+        }
+        return null;
     }
 
     private UserAccount getUserDetails() {

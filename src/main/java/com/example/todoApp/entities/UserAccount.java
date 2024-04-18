@@ -22,15 +22,17 @@ public class UserAccount extends BaseEntityAudit implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    protected UserAccount() {}
+    protected UserAccount() {
+    }
 
-    public UserAccount(String firstname, String lastname, String email, String password, Role role){
+    public UserAccount(String firstname, String lastname, String email, String password, Role role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.role = role;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
@@ -46,7 +48,9 @@ public class UserAccount extends BaseEntityAudit implements UserDetails {
         return email;
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

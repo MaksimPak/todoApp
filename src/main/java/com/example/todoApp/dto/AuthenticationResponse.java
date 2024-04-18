@@ -8,9 +8,11 @@ public class AuthenticationResponse {
         this.accessToken = jwtToken;
         this.refreshToken = refreshToken;
     }
+
     public String getAccessToken() {
         return accessToken;
     }
+
     public String getRefreshToken() {
         return refreshToken;
     }

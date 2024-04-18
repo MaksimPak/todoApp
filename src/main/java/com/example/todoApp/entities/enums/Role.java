@@ -33,6 +33,7 @@ public enum Role {
     );
 
     private final Set<Permission> permissions;
+
     Role(Set<Permission> permissions) {
         this.permissions = permissions;
     }
@@ -40,6 +41,7 @@ public enum Role {
     public Set<Permission> getPermissions() {
         return permissions;
     }
+
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()

@@ -29,7 +29,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuditorAware<UUID> auditorAware(){
+    public AuditorAware<UUID> auditorAware() {
         return new ApplicationAuditAware();
     }
 

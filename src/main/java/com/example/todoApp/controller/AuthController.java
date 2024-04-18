@@ -24,15 +24,17 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthenticationResponse register(
             @Valid @RequestBody RegisterRequest request
-            ) {
+    ) {
         return authenticationService.register(request);
     }
+
     @PostMapping("/authenticate")
     public AuthenticationResponse authenticate(
             @Valid @RequestBody AuthenticationRequest request
-            ) throws UsernameNotFoundException {
+    ) throws UsernameNotFoundException {
         return authenticationService.authenticate(request);
     }
+
     @PostMapping("/refresh-token")
     public void refreshToken(
             HttpServletRequest request,

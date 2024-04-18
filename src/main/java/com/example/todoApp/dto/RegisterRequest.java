@@ -17,6 +17,7 @@ public class RegisterRequest {
     private String password;
     @NotNull
     private Role role;
+
     public RegisterRequest(String firstname, String lastName, String email, String password, Role role) {
         this.firstName = firstname;
         this.lastName = lastName;
@@ -24,21 +25,27 @@ public class RegisterRequest {
         this.password = password;
         this.role = role;
     }
-    public void setFirstName(String firstName){
+
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public void setRole(Role role) {
         this.role = role;
     }
+
     public String getFirstname() {
         return firstName;
     }

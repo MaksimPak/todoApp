@@ -16,6 +16,7 @@ public class TodoCreate {
     public String getName() {
         return this.name;
     }
+
     public MultipartFile getImage() {
         return this.image;
     }
