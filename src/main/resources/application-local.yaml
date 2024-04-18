@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: dummy-access-key
+        secret-key: dummy-secret-key
+      endpoint: http://localhost:4566
+      s3:
+        path-style-access-enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todoApp
+    username: postgres
+    password: postgres
+
+application:
+  aws:
+    bucket-name: todoapp-s3

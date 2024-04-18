@@ -19,7 +19,7 @@ public class S3Service {
     private S3Template s3Template;
     @Autowired
     private S3Client s3Client;
-    @Value("#{environment.AWS_BUCKET_NAME}")
+    @Value("${application.aws.bucket-name}")
     private String bucketName;
 
     public String uploadObject(MultipartFile file) throws IOException {
@@ -49,4 +49,9 @@ public class S3Service {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (UserAccount) authentication.getPrincipal();
     }
+
+    public void deleteObject(String path) {
+        s3Template.deleteObject(this.bucketName, path);
+    }
+
 }
