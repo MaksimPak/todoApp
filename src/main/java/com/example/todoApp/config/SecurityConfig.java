@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
+                                .requestMatchers("/error").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
