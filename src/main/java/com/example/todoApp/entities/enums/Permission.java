@@ -1,6 +1,9 @@
 package com.example.todoApp.entities.enums;
 
 
+import lombok.Getter;
+
+@Getter
 public enum Permission {
     ADMIN_READ("admin:read"),
     ADMIN_UPDATE("admin:update"),
@@ -15,10 +18,6 @@ public enum Permission {
 
     Permission(String permission) {
         this.permission = permission;
-    }
-
-    public String getPermission() {
-        return permission;
     }
 
 }

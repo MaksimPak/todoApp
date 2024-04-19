@@ -1,5 +1,6 @@
 package com.example.todoApp.entities.enums;
 
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static com.example.todoApp.entities.enums.Permission.*;
 
+@Getter
 public enum Role {
     USER(Collections.emptySet()),
     ADMIN(
@@ -36,10 +38,6 @@ public enum Role {
 
     Role(Set<Permission> permissions) {
         this.permissions = permissions;
-    }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
     }
 
     public List<SimpleGrantedAuthority> getAuthorities() {

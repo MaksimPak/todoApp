@@ -4,7 +4,8 @@ import com.example.todoApp.dto.TodoCreate;
 import com.example.todoApp.dto.TodoDTO;
 import com.example.todoApp.entities.ToDoRecord;
 import com.example.todoApp.entities.UserAccount;
-import com.example.todoApp.exception.ToDoNotFoundException;
+import com.example.todoApp.exception.EntityNotFoundException;
+import com.example.todoApp.exception.TodoNotFoundException;
 import com.example.todoApp.repository.ToDoRepository;
 import com.example.todoApp.service.S3Service;
 import jakarta.validation.Valid;
@@ -47,14 +48,18 @@ public class ToDoController {
         if (todo.getImage() != null) {
             imagePath = s3Service.uploadObject(todo.getImage());
         }
-        ToDoRecord newTodo = new ToDoRecord(todo.getName(), imagePath);
+        ToDoRecord newTodo = ToDoRecord.builder()
+                .name(todo.getName())
+                .image(imagePath)
+                .build();
+
         repository.save(newTodo);
         return new TodoDTO(newTodo.getId(), newTodo.getName(), s3Service.constructFullPath(newTodo.getImage()));
     }
 
     @GetMapping("/todos/{id}")
-    TodoDTO getOne(@PathVariable UUID id) throws ToDoNotFoundException {
-        ToDoRecord todo = repository.findById(id).orElseThrow(() -> new ToDoNotFoundException(id));
+    TodoDTO getOne(@PathVariable UUID id) throws TodoNotFoundException {
+        ToDoRecord todo = repository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
         return new TodoDTO(todo.getId(), todo.getName(), todo.getImage());
     }
 
@@ -62,7 +67,7 @@ public class ToDoController {
     TodoDTO changeTodo(
             @Valid TodoCreate editedTodo,
             @PathVariable UUID id
-    ) throws ToDoNotFoundException, IOException {
+    ) throws EntityNotFoundException, IOException {
         return repository.findById(id).map(todo -> {
             if (todo.getImage() != null) s3Service.deleteObject(todo.getImage());
             if (editedTodo.getImage() != null) {
@@ -76,7 +81,7 @@ public class ToDoController {
             todo.setName(editedTodo.getName());
             repository.save(todo);
             return new TodoDTO(todo.getId(), todo.getName(), s3Service.constructFullPath(todo.getImage()));
-        }).orElseThrow(() -> new ToDoNotFoundException(id));
+        }).orElseThrow(() -> new TodoNotFoundException(id));
     }
 
     @DeleteMapping("/todos/{id}")
@@ -91,7 +96,7 @@ public class ToDoController {
 
     @DeleteMapping("/todos/{id}/deleteImage")
     void deleteTodoImage(@PathVariable UUID id) {
-        ToDoRecord todo = repository.findById(id).orElseThrow(() -> new ToDoNotFoundException(id));
+        ToDoRecord todo = repository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
         if (todo.getImage() != null) s3Service.deleteObject(todo.getImage());
         todo.setImage(null);
         repository.save(todo);
