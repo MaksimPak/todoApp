@@ -1,6 +1,7 @@
 package com.example.todoApp.config;
 
 import com.example.todoApp.filter.JwtAuthenticationFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = {
             "/api/v1/auth/**"
     };
-    @Autowired
+
     private JwtAuthenticationFilter jwtAuthFilter;
-    @Autowired
     private AuthenticationProvider authenticationProvider;
-    @Autowired
     private LogoutHandler logoutHandler;
 
     @Bean

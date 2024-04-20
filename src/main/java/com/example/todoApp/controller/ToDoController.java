@@ -9,6 +9,7 @@ import com.example.todoApp.exception.TodoNotFoundException;
 import com.example.todoApp.repository.ToDoRepository;
 import com.example.todoApp.service.S3Service;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -22,12 +23,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequestMapping(value = "/api/v1")
+@AllArgsConstructor
 @RestController
 public class ToDoController {
 
-    @Autowired
     private ToDoRepository repository;
-    @Autowired
     private S3Service s3Service;
 
     @GetMapping("/todos")
@@ -37,7 +37,11 @@ public class ToDoController {
 
         return repository.findByCreatedBy(user.getId())
                 .stream()
-                .map(todo -> new TodoDTO(todo.getId(), todo.getName(), s3Service.constructFullPath(todo.getImage())))
+                .map(todo -> TodoDTO.builder()
+                        .id(todo.getId())
+                        .name(todo.getName())
+                        .image(s3Service.constructFullPath(todo.getImage()))
+                        .build())
                 .collect(Collectors.toList());
 
     }
@@ -45,22 +49,30 @@ public class ToDoController {
     @PostMapping(value = "/todos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     TodoDTO newTodo(@Valid TodoCreate todo) throws IOException {
         String imagePath = null;
-        if (todo.getImage() != null) {
-            imagePath = s3Service.uploadObject(todo.getImage());
-        }
+        if (todo.getImage() != null) imagePath = s3Service.uploadObject(todo.getImage());
+
         ToDoRecord newTodo = ToDoRecord.builder()
                 .name(todo.getName())
                 .image(imagePath)
                 .build();
 
         repository.save(newTodo);
-        return new TodoDTO(newTodo.getId(), newTodo.getName(), s3Service.constructFullPath(newTodo.getImage()));
+        return TodoDTO.builder()
+                .id(newTodo.getId())
+                .name(newTodo.getName())
+                .image(s3Service.constructFullPath(newTodo.getImage()))
+                .build();
     }
 
     @GetMapping("/todos/{id}")
     TodoDTO getOne(@PathVariable UUID id) throws TodoNotFoundException {
         ToDoRecord todo = repository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
-        return new TodoDTO(todo.getId(), todo.getName(), todo.getImage());
+
+        return TodoDTO.builder()
+                .id(todo.getId())
+                .name(todo.getName())
+                .image(todo.getImage())
+                .build();
     }
 
     @PutMapping(value = "/todos/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -80,7 +92,12 @@ public class ToDoController {
             }
             todo.setName(editedTodo.getName());
             repository.save(todo);
-            return new TodoDTO(todo.getId(), todo.getName(), s3Service.constructFullPath(todo.getImage()));
+
+            return TodoDTO.builder()
+                    .id(todo.getId())
+                    .name(todo.getName())
+                    .image(s3Service.constructFullPath(todo.getImage()))
+                    .build();
         }).orElseThrow(() -> new TodoNotFoundException(id));
     }
 

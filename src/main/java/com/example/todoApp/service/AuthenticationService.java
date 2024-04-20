@@ -11,6 +11,7 @@ import com.example.todoApp.repository.UserAccountRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,35 +23,33 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class AuthenticationService {
-    @Autowired
     private UserAccountRepository userAccountRepository;
-    @Autowired
     private TokenRepository tokenRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private JwtService jwtService;
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        UserAccount user = new UserAccount(
-                request.getFirstname(),
-                request.getLastname(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getRole()
-        );
+        UserAccount user = UserAccount.builder()
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
+
         UserAccount savedUser = userAccountRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
-        return new AuthenticationResponse(
-                jwtToken,
-                refreshToken
-        );
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -60,16 +59,18 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        UserAccount user = userAccountRepository.findByEmail(request.getEmail())
+        UserAccount user = userAccountRepository
+                .findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-        return new AuthenticationResponse(
-                jwtToken,
-                refreshToken
-        );
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     private void revokeAllUserTokens(UserAccount user) {
@@ -84,14 +85,12 @@ public class AuthenticationService {
     }
 
     private void saveUserToken(UserAccount savedUser, String jwtToken) {
-        var token = new Token(
-                jwtToken,
-                TokenType.BEARER,
-                false,
-                false,
-                savedUser
-
-        );
+        var token = Token.builder()
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
         tokenRepository.save(token);
     }
 
@@ -103,8 +102,10 @@ public class AuthenticationService {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
+
         final String refreshToken = authHeader.substring(7);
         final String userEmail = jwtService.extractUsername(refreshToken);
+
         if (userEmail != null) {
             var user = userAccountRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -112,7 +113,12 @@ public class AuthenticationService {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                var authResponse = new AuthenticationResponse(accessToken, refreshToken);
+
+                var authResponse = AuthenticationResponse.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }

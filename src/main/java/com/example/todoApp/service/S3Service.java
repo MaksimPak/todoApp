@@ -3,7 +3,8 @@ package com.example.todoApp.service;
 import com.example.todoApp.entities.UserAccount;
 import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Template;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +14,13 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 @Service
 public class S3Service {
-    @Autowired
-    private S3Template s3Template;
-    @Autowired
-    private S3Client s3Client;
+
+    private final S3Template s3Template;
+    private final S3Client s3Client;
+
     @Value("${application.aws.bucket-name}")
     private String bucketName;
 
