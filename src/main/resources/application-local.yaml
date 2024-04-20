@@ -1,6 +1,8 @@
 spring:
   cloud:
     aws:
+      region:
+        static: eu-central-1
       credentials:
         access-key: dummy-access-key
         secret-key: dummy-secret-key
