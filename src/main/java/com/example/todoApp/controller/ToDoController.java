@@ -10,7 +10,6 @@ import com.example.todoApp.repository.ToDoRepository;
 import com.example.todoApp.service.S3Service;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
