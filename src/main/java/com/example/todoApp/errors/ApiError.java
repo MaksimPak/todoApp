@@ -1,10 +1,8 @@
 package com.example.todoApp.errors;
 
 
-import com.example.todoApp.LowerCaseClassNameResolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import jakarta.validation.ConstraintViolation;
 import lombok.Data;
 import org.hibernate.validator.internal.engine.path.PathImpl;
@@ -18,8 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.CUSTOM, property = "error", visible = true)
-@JsonTypeIdResolver(LowerCaseClassNameResolver.class)
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 public class ApiError {
 
     private HttpStatus status;
